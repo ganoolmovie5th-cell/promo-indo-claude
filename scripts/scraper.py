@@ -100,6 +100,26 @@ def is_promo_post(text):
     return any(kw in t for kw in PROMO_KEYWORDS)
 
 
+def parse_date_id(s):
+    """Parse Indonesian date like '31 Agustus 2026' or '15/08/2026'."""
+    if not s:
+        return None
+    months = {"januari":1,"februari":2,"maret":3,"april":4,"mei":5,"juni":6,
+              "juli":7,"agustus":8,"september":9,"oktober":10,"november":11,"desember":12}
+    import re as _re
+    m = _re.match(r'(\d{1,2})\s+(\w+)\s+(\d{4})', s.strip())
+    if m:
+        mon = months.get(m.group(2).lower())
+        if mon:
+            from datetime import date
+            return date(int(m.group(3)), mon, int(m.group(1)))
+    m2 = _re.match(r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{4})', s.strip())
+    if m2:
+        from datetime import date
+        return date(int(m2.group(3)), int(m2.group(2)), int(m2.group(1)))
+    return None
+
+
 async def scrape_threads_account(page, username):
     """Scrape posts from a single Threads account using Playwright."""
     posts = []
@@ -201,7 +221,18 @@ async def main_async():
 
     # Sort newest first, keep max 500
     unique.sort(key=lambda x: x.get("scraped_at", ""), reverse=True)
-    unique = unique[:500]
+
+    # Remove expired promos
+    today = datetime.now(timezone.utc).date()
+    active = []
+    for p in unique:
+        vu = p.get("valid_until")
+        if vu:
+            parsed = parse_date_id(vu)
+            if parsed and parsed < today:
+                continue  # expired, skip
+        active.append(p)
+    unique = active[:500]
 
     # Write data
     with open(data_file, "w", encoding="utf-8") as f:

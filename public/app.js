@@ -10,6 +10,22 @@
   const searchInput = document.getElementById('searchInput');
   const lastUpdatedEl = document.getElementById('lastUpdated');
 
+  // Parse Indonesian date strings like "31 Agustus 2026" or "15/08/2026"
+  function parseIndonesianDate(str) {
+    if (!str) return null;
+    const months = {januari:0,februari:1,maret:2,april:3,mei:4,juni:5,juli:6,agustus:7,september:8,oktober:9,november:10,desember:11};
+    // Try "31 Agustus 2026"
+    const m = str.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
+    if (m) {
+      const mon = months[m[2].toLowerCase()];
+      if (mon !== undefined) return new Date(+m[3], mon, +m[1]);
+    }
+    // Try "31/08/2026" or "31-08-2026"
+    const m2 = str.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+    if (m2) return new Date(+m2[3], +m2[2]-1, +m2[1]);
+    return null;
+  }
+
   // Category labels
   const catLabels = {
     makanan: '🍔 Makanan',
@@ -53,6 +69,16 @@
     if (activeCategory !== 'semua') {
       filtered = filtered.filter(p => p.category === activeCategory);
     }
+
+    // Filter expired promos
+    filtered = filtered.filter(p => {
+      if (!p.valid_until) return true; // no date = assume active
+      try {
+        const parsed = parseIndonesianDate(p.valid_until);
+        if (!parsed) return true;
+        return parsed >= new Date().setHours(0,0,0,0);
+      } catch { return true; }
+    });
 
     // Filter by search
     if (searchQuery) {
