@@ -1,10 +1,12 @@
-// Promo Threads — Client App (Full Featured)
+// Promo Threads — Client App (Full Featured v2)
 (function() {
   let allPromos = [];
   let activeCategory = 'semua';
   let searchQuery = '';
   let sortMode = 'terbaru';
   let providerFilter = '';
+  let showBookmarkOnly = false;
+  let visibleCount = 20;
   let bookmarks = JSON.parse(localStorage.getItem('pt-bookmarks') || '[]');
 
   const grid = document.getElementById('promoGrid');
@@ -18,6 +20,10 @@
   const providerSelect = document.getElementById('providerFilter');
   const scrollTopBtn = document.getElementById('scrollTop');
   const themeToggle = document.getElementById('themeToggle');
+  const savedBtn = document.getElementById('savedBtn');
+  const savedCount = document.getElementById('savedCount');
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  const trendingSection = document.getElementById('trendingGrid');
 
   const catLabels = {
     makanan:'🍔 Makanan', belanja:'🛍️ Belanja', hiburan:'🎬 Hiburan',
@@ -29,7 +35,6 @@
   const savedTheme = localStorage.getItem('pt-theme') || 'dark';
   if (savedTheme === 'light') document.body.classList.add('light');
   themeToggle.textContent = savedTheme === 'light' ? '🌙' : '☀️';
-
   themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light');
     const isLight = document.body.classList.contains('light');
@@ -46,6 +51,21 @@
     const m2 = str.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
     if (m2) return new Date(+m2[3], +m2[2]-1, +m2[1]);
     return null;
+  }
+
+  function getCountdown(str) {
+    const d = parseIndonesianDate(str);
+    if (!d) return null;
+    const diff = Math.ceil((d - new Date()) / 86400000);
+    if (diff < 0) return null;
+    if (diff === 0) return 'Hari terakhir!';
+    if (diff <= 7) return `Sisa ${diff} hari`;
+    return null;
+  }
+
+  function isNew(scraped_at) {
+    if (!scraped_at) return false;
+    return (Date.now() - new Date(scraped_at).getTime()) < 86400000;
   }
 
   // ─── Load data ────────────────────────────────────────────────────────────────
@@ -74,6 +94,8 @@
 
     // Hero stats
     heroStats.textContent = `🔥 ${allPromos.length} promo aktif hari ini`;
+    updateSavedCount();
+    renderTrending();
 
     // Hide skeleton, show grid
     skeletonGrid.style.display = 'none';
@@ -81,9 +103,27 @@
     render();
   }
 
+  // ─── Trending (most bookmarked) ───────────────────────────────────────────────
+  function renderTrending() {
+    if (!bookmarks.length) { trendingSection.parentElement.style.display = 'none'; return; }
+    trendingSection.parentElement.style.display = '';
+    const trending = allPromos.filter(p => bookmarks.includes(p.id)).slice(0, 5);
+    if (!trending.length) { trendingSection.parentElement.style.display = 'none'; return; }
+    trendingSection.innerHTML = trending.map(p => `
+      <div class="trending-card">
+        <span class="source">${p.source}</span>
+        <span class="trending-text">${escapeHtml((p.text||'').slice(0,60))}...</span>
+        ${p.discount ? `<span class="tag tag-discount">${p.discount}</span>` : ''}
+      </div>
+    `).join('');
+  }
+
   // ─── Render ───────────────────────────────────────────────────────────────────
   function render() {
     let filtered = allPromos;
+
+    // Bookmark only
+    if (showBookmarkOnly) filtered = filtered.filter(p => bookmarks.includes(p.id));
 
     // Category
     if (activeCategory !== 'semua') filtered = filtered.filter(p => p.category === activeCategory);
@@ -121,23 +161,31 @@
 
     countEl.textContent = `${filtered.length} promo ditemukan`;
 
-    if (!filtered.length) { grid.innerHTML = ''; emptyEl.style.display = 'block'; return; }
+    if (!filtered.length) { grid.innerHTML = ''; emptyEl.style.display = 'block'; loadMoreBtn.style.display = 'none'; return; }
     emptyEl.style.display = 'none';
 
-    grid.innerHTML = filtered.map(p => {
+    // Infinite scroll: show only visibleCount
+    const visible = filtered.slice(0, visibleCount);
+    loadMoreBtn.style.display = filtered.length > visibleCount ? '' : 'none';
+
+    grid.innerHTML = visible.map((p, idx) => {
       const tags = [];
       if (p.discount) tags.push(`<span class="tag tag-discount">${p.discount}</span>`);
       if (p.code) tags.push(`<span class="tag tag-code" onclick="copyCode('${p.code}',this)" title="Klik untuk copy">📋 ${p.code}</span>`);
-      if (p.valid_until) tags.push(`<span class="tag tag-valid">s/d ${p.valid_until}</span>`);
+
+      const countdown = getCountdown(p.valid_until);
+      if (countdown) tags.push(`<span class="tag tag-countdown">⏰ ${countdown}</span>`);
+      else if (p.valid_until) tags.push(`<span class="tag tag-valid">s/d ${p.valid_until}</span>`);
 
       const isBookmarked = bookmarks.includes(p.id);
       const timeAgo = p.scraped_at ? getTimeAgo(new Date(p.scraped_at)) : '';
       const catLabel = catLabels[p.category] || p.category;
+      const newBadge = isNew(p.scraped_at) ? '<span class="badge-new">BARU</span>' : '';
 
       return `
-        <div class="promo-card">
+        <div class="promo-card card-animate" style="animation-delay:${idx*0.03}s">
           <div class="card-header">
-            <span class="source">${p.source || 'Unknown'}</span>
+            <span class="source">${p.source || 'Unknown'} ${newBadge}</span>
             <span class="category-badge">${catLabel}</span>
           </div>
           <div class="card-text">${escapeHtml(p.text || '')}</div>
@@ -169,6 +217,11 @@
     return date.toLocaleDateString('id-ID',{day:'numeric',month:'short'});
   }
 
+  function updateSavedCount() {
+    savedCount.textContent = bookmarks.length || '';
+    savedCount.style.display = bookmarks.length ? '' : 'none';
+  }
+
   // ─── Global functions ─────────────────────────────────────────────────────────
   window.copyCode = function(code, el) {
     navigator.clipboard.writeText(code);
@@ -183,6 +236,8 @@
     if (idx > -1) bookmarks.splice(idx, 1);
     else bookmarks.push(id);
     localStorage.setItem('pt-bookmarks', JSON.stringify(bookmarks));
+    updateSavedCount();
+    renderTrending();
     render();
   };
 
@@ -198,12 +253,24 @@
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     activeCategory = btn.dataset.cat;
+    visibleCount = 20;
     render();
   });
 
-  searchInput.addEventListener('input', e => { searchQuery = e.target.value.trim(); render(); });
+  searchInput.addEventListener('input', e => { searchQuery = e.target.value.trim(); visibleCount = 20; render(); });
   sortSelect.addEventListener('change', e => { sortMode = e.target.value; render(); });
   providerSelect.addEventListener('change', e => { providerFilter = e.target.value; render(); });
+
+  // Saved filter
+  savedBtn.addEventListener('click', () => {
+    showBookmarkOnly = !showBookmarkOnly;
+    savedBtn.classList.toggle('active', showBookmarkOnly);
+    visibleCount = 20;
+    render();
+  });
+
+  // Load more
+  loadMoreBtn.addEventListener('click', () => { visibleCount += 20; render(); });
 
   // Scroll to top
   window.addEventListener('scroll', () => {
@@ -213,9 +280,5 @@
 
   // ─── Init ─────────────────────────────────────────────────────────────────────
   loadData();
-
-  // Register service worker for PWA
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 })();

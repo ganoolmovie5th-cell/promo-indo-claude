@@ -23,7 +23,8 @@
         <span class="logo-text">Promo Threads</span>
       </a>
       <div class="nav-right">
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        <button class="saved-btn" id="savedBtn" title="Lihat Tersimpan">❤️ <span class="saved-count" id="savedCount" style="display:none;"></span></button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☀️</button>
         <div class="nav-meta" id="lastUpdated"></div>
       </div>
     </div>
@@ -35,12 +36,19 @@
       <h1>Promo, Voucher & Cashback dari <span class="highlight">Threads</span></h1>
       <p class="hero-sub">Dikumpulkan otomatis setiap hari dari akun bank, e-wallet, dan marketplace di Threads.</p>
       <div class="hero-stats" id="heroStats"></div>
-      <!-- Search -->
       <div class="search-wrap">
         <input type="text" id="searchInput" placeholder="Cari promo... (contoh: starbucks, cashback 50%)" autocomplete="off">
       </div>
     </div>
   </header>
+
+  <!-- Trending / Saved -->
+  <section class="trending-section" style="display:none;">
+    <div class="container">
+      <h3 class="section-title">⭐ Promo Tersimpan</h3>
+      <div class="trending-grid" id="trendingGrid"></div>
+    </div>
+  </section>
 
   <!-- Categories -->
   <section class="categories">
@@ -62,9 +70,7 @@
   <!-- Sort & Filter -->
   <section class="sort-bar">
     <div class="container sort-inner">
-      <div class="sort-left">
-        <h2 id="promoCount">Memuat...</h2>
-      </div>
+      <div class="sort-left"><h2 id="promoCount">Memuat...</h2></div>
       <div class="sort-right">
         <select id="sortSelect" class="sort-select">
           <option value="terbaru">Terbaru</option>
@@ -80,19 +86,18 @@
   <!-- Promo Grid -->
   <main class="promos-section">
     <div class="container">
-      <!-- Loading skeleton -->
       <div class="promo-grid skeleton-grid" id="skeletonGrid">
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
-        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div><div class="skeleton-card"></div>
+        <div class="skeleton-card"></div><div class="skeleton-card"></div>
+        <div class="skeleton-card"></div><div class="skeleton-card"></div>
       </div>
       <div class="promo-grid" id="promoGrid" style="display:none;"></div>
       <div class="empty-state" id="emptyState" style="display:none;">
         <div class="empty-icon">🔍</div>
         <p>Tidak ada promo ditemukan.</p>
+      </div>
+      <div class="load-more-wrap">
+        <button class="load-more-btn" id="loadMoreBtn" style="display:none;">Muat Lebih Banyak ↓</button>
       </div>
     </div>
   </main>
@@ -103,7 +108,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>Promo Threads &copy; 2026. Data di-scrape otomatis dari Threads. Tidak berafiliasi dengan brand manapun.</p>
+      <p>Promo Threads &copy; 2026. Data di-scrape otomatis dari Threads.</p>
       <p class="footer-sub">Sumber: 58 akun resmi bank, e-wallet, dan marketplace di Threads.</p>
     </div>
   </footer>
