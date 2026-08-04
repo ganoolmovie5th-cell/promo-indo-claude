@@ -1,1 +1,222 @@
-[]
+[
+  {
+    "id": "bca_26030",
+    "source": "BCA",
+    "source_url": "https://www.bca.co.id/id/informasi/promo",
+    "text": "Cashback 30% menggunakan Kartu Kredit BCA di semua outlet Starbucks Indonesia. Maks cashback Rp 50.000 per transaksi.",
+    "category": "makanan",
+    "discount": "30%",
+    "code": null,
+    "valid_until": "31 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "mandiri_65420",
+    "source": "Mandiri",
+    "source_url": "https://www.bankmandiri.co.id/promo",
+    "text": "Diskon 20% untuk pembelian BBM di bp dengan Kartu Kredit Mandiri. Min transaksi Rp 400.000, cashback Rp 20.000.",
+    "category": "transport",
+    "discount": "20%",
+    "code": null,
+    "valid_until": "30 September 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "gopay_53467",
+    "source": "GoPay",
+    "source_url": "https://www.gojek.com/blog/gopay/",
+    "text": "Cashback 50% untuk pengguna baru GoPay di GoFood. Maks cashback Rp 25.000. Berlaku untuk semua resto partner.",
+    "category": "makanan",
+    "discount": "50%",
+    "code": "GOPAYUSER",
+    "valid_until": "31 Desember 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "shopeepay_24541",
+    "source": "ShopeePay",
+    "source_url": "https://shopee.co.id/m/shopeepay",
+    "text": "Voucher cashback 40% di Alfamart menggunakan ShopeePay. Min belanja Rp 30.000, maks cashback Rp 10.000.",
+    "category": "belanja",
+    "discount": "40%",
+    "code": null,
+    "valid_until": "15 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "ovo_64129",
+    "source": "OVO",
+    "source_url": "https://www.ovo.id/promo",
+    "text": "Diskon 25% untuk semua transaksi di Grab menggunakan OVO Points. Berlaku GrabCar dan GrabBike.",
+    "category": "transport",
+    "discount": "25%",
+    "code": "OVORIDE25",
+    "valid_until": "30 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "dana_68196",
+    "source": "DANA",
+    "source_url": "https://www.dana.id/promo",
+    "text": "Cashback hingga Rp 100.000 untuk pembayaran tagihan listrik via DANA. Min pembayaran Rp 200.000.",
+    "category": "keuangan",
+    "discount": null,
+    "code": null,
+    "valid_until": "31 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "tokopedia_76127",
+    "source": "Tokopedia",
+    "source_url": "https://www.tokopedia.com/promo",
+    "text": "Flash Sale Gadget: Diskon hingga 70% + Gratis Ongkir untuk produk elektronik pilihan. Setiap Selasa & Kamis.",
+    "category": "belanja",
+    "discount": "70%",
+    "code": null,
+    "valid_until": "31 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "traveloka_95785",
+    "source": "Traveloka",
+    "source_url": "https://www.traveloka.com/id-id/promotion",
+    "text": "Diskon hotel hingga 50% + ekstra diskon 10% dengan kode TRAVEL10. Berlaku untuk hotel bintang 3-5 di seluruh Indonesia.",
+    "category": "hotel",
+    "discount": "50%",
+    "code": "TRAVEL10",
+    "valid_until": "30 September 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "bri_48409",
+    "source": "BRI",
+    "source_url": "https://bfrenz.id/promo",
+    "text": "Promo Kartu Kredit BRI: Buy 1 Get 1 Free tiket CGV setiap hari Jumat. Berlaku semua film dan semua cabang.",
+    "category": "hiburan",
+    "discount": "Buy 1 Get 1",
+    "code": null,
+    "valid_until": "31 Desember 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "bni_98303",
+    "source": "BNI",
+    "source_url": "https://www.bni.co.id/promo",
+    "text": "Diskon 15% di seluruh outlet Pizza Hut dengan BNI Debit/Kredit. Maks diskon Rp 75.000 per struk.",
+    "category": "makanan",
+    "discount": "15%",
+    "code": null,
+    "valid_until": "31 Oktober 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "shopee_5091",
+    "source": "Shopee",
+    "source_url": "https://shopee.co.id/m/gratis-ongkir-xtra",
+    "text": "Gratis Ongkir Xtra min belanja Rp 0 khusus pengguna baru. Berlaku untuk semua produk di Shopee.",
+    "category": "belanja",
+    "discount": "Gratis Ongkir",
+    "code": "FREEONGKIR",
+    "valid_until": "31 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "grabfood_90986",
+    "source": "GrabFood",
+    "source_url": "https://www.grab.com/id/food/",
+    "text": "Promo Grab: Diskon 60% untuk 5 pesanan pertama di GrabFood. Maks diskon Rp 30.000 per order.",
+    "category": "makanan",
+    "discount": "60%",
+    "code": "GRABFIRST",
+    "valid_until": "31 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "bca_96759",
+    "source": "BCA",
+    "source_url": "https://www.bca.co.id/id/informasi/promo",
+    "text": "Cicilan 0% hingga 12 bulan untuk pembelian iPhone di iBox menggunakan Kartu Kredit BCA.",
+    "category": "belanja",
+    "discount": "Cicilan 0%",
+    "code": null,
+    "valid_until": "30 September 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "mandiri_94998",
+    "source": "Mandiri",
+    "source_url": "https://www.bankmandiri.co.id/promo-cashback-booking-com",
+    "text": "Cashback Rp 100.000 di Booking.com menggunakan Mandiri Kartu Kredit. Min booking Rp 1.500.000.",
+    "category": "hotel",
+    "discount": "Rp 100.000",
+    "code": null,
+    "valid_until": "31 Oktober 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "dana_41231",
+    "source": "DANA",
+    "source_url": "https://www.dana.id/promo",
+    "text": "Voucher diskon 30% untuk nonton di TIX ID bayar pakai DANA. Maks potongan Rp 20.000.",
+    "category": "hiburan",
+    "discount": "30%",
+    "code": "DANATIX30",
+    "valid_until": "31 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "ovo_60059",
+    "source": "OVO",
+    "source_url": "https://www.ovo.id/promo",
+    "text": "Cashback 20% di KFC setiap Senin-Kamis bayar pakai OVO. Maks cashback Rp 15.000 per transaksi.",
+    "category": "makanan",
+    "discount": "20%",
+    "code": null,
+    "valid_until": "30 September 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "halodoc_42358",
+    "source": "Halodoc",
+    "source_url": "https://www.halodoc.com/promo",
+    "text": "Gratis konsultasi dokter pertama + diskon 30% obat untuk pengguna baru Halodoc.",
+    "category": "kesehatan",
+    "discount": "30%",
+    "code": "HALOFIRST",
+    "valid_until": "31 Desember 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "grab_24186",
+    "source": "Grab",
+    "source_url": "https://www.grab.com/id/transport/",
+    "text": "Diskon 50% GrabCar ke/dari bandara Soekarno-Hatta. Maks diskon Rp 50.000. Khusus jam 05.00-08.00.",
+    "category": "transport",
+    "discount": "50%",
+    "code": "GRABAIRPORT",
+    "valid_until": "31 Agustus 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "bca_91498",
+    "source": "BCA",
+    "source_url": "https://www.bca.co.id/id/informasi/promo",
+    "text": "Diskon 50% di J.CO semua outlet menggunakan QRIS BCA. Berlaku setiap Rabu, maks diskon Rp 35.000.",
+    "category": "makanan",
+    "discount": "50%",
+    "code": null,
+    "valid_until": "31 Oktober 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  },
+  {
+    "id": "traveloka_28517",
+    "source": "Traveloka",
+    "source_url": "https://www.traveloka.com/id-id/promotion",
+    "text": "Flash Sale tiket pesawat domestik mulai Rp 399.000 semua rute. Setiap Senin jam 10.00 WIB.",
+    "category": "hotel",
+    "discount": "Flash Sale",
+    "code": null,
+    "valid_until": "31 Desember 2026",
+    "scraped_at": "2026-08-04T08:22:35.770654+00:00"
+  }
+]
