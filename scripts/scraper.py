@@ -328,6 +328,32 @@ async def main_async():
     with open(os.path.join(DATA_DIR, "meta.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 
+    # Generate RSS feed
+    rss_items = ""
+    for p in unique[:30]:
+        title = (p.get("text") or "")[:100].replace("&", "&amp;").replace("<", "&lt;")
+        rss_items += f"""    <item>
+      <title>{title}</title>
+      <link>{p.get("source_url","")}</link>
+      <description>{(p.get("text","")).replace("&","&amp;").replace("<","&lt;")}</description>
+      <pubDate>{p.get("scraped_at","")}</pubDate>
+      <category>{p.get("category","lainnya")}</category>
+    </item>\n"""
+
+    rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Promo Threads</title>
+    <link>https://promo-threads.web.id</link>
+    <description>Kumpulan promo, voucher, cashback Indonesia dari Threads</description>
+    <lastBuildDate>{datetime.now(timezone.utc).isoformat()}</lastBuildDate>
+{rss_items}  </channel>
+</rss>"""
+
+    rss_path = os.path.join(DATA_DIR, "..", "rss.xml")
+    with open(rss_path, "w", encoding="utf-8") as f:
+        f.write(rss)
+
     print(f"\n[*] Done! {len(unique)} promos saved.")
 
 

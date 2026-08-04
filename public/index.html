@@ -6,16 +6,13 @@
   <title>Promo Threads — Kumpulan Promo, Voucher & Cashback Indonesia</title>
   <meta name="description" content="Kumpulan promo, kode voucher, dan cashback terlengkap di Indonesia dari Threads. Update otomatis setiap hari.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a0a0a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/style.css">
-  <!-- Vercel Web Analytics -->
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
   <!-- Navbar -->
@@ -25,7 +22,10 @@
         <span class="logo-icon">🧵</span>
         <span class="logo-text">Promo Threads</span>
       </a>
-      <div class="nav-meta" id="lastUpdated"></div>
+      <div class="nav-right">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        <div class="nav-meta" id="lastUpdated"></div>
+      </div>
     </div>
   </nav>
 
@@ -34,6 +34,7 @@
     <div class="container">
       <h1>Promo, Voucher & Cashback dari <span class="highlight">Threads</span></h1>
       <p class="hero-sub">Dikumpulkan otomatis setiap hari dari akun bank, e-wallet, dan marketplace di Threads.</p>
+      <div class="hero-stats" id="heroStats"></div>
       <!-- Search -->
       <div class="search-wrap">
         <input type="text" id="searchInput" placeholder="Cari promo... (contoh: starbucks, cashback 50%)" autocomplete="off">
@@ -58,15 +59,37 @@
     </div>
   </section>
 
+  <!-- Sort & Filter -->
+  <section class="sort-bar">
+    <div class="container sort-inner">
+      <div class="sort-left">
+        <h2 id="promoCount">Memuat...</h2>
+      </div>
+      <div class="sort-right">
+        <select id="sortSelect" class="sort-select">
+          <option value="terbaru">Terbaru</option>
+          <option value="diskon">Diskon Terbesar</option>
+        </select>
+        <select id="providerFilter" class="sort-select">
+          <option value="">Semua Provider</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
   <!-- Promo Grid -->
   <main class="promos-section">
     <div class="container">
-      <div class="promos-header">
-        <h2 id="promoCount">Memuat...</h2>
+      <!-- Loading skeleton -->
+      <div class="promo-grid skeleton-grid" id="skeletonGrid">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
       </div>
-      <div class="promo-grid" id="promoGrid">
-        <!-- Cards injected by JS -->
-      </div>
+      <div class="promo-grid" id="promoGrid" style="display:none;"></div>
       <div class="empty-state" id="emptyState" style="display:none;">
         <div class="empty-icon">🔍</div>
         <p>Tidak ada promo ditemukan.</p>
@@ -74,11 +97,15 @@
     </div>
   </main>
 
+  <!-- Scroll to top -->
+  <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">↑</button>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <p>Promo Threads &copy; 2026. Data di-scrape otomatis dari Threads. Tidak berafiliasi dengan brand manapun.</p>
-      <p class="footer-sub">Sumber: akun resmi bank, e-wallet, dan marketplace di Threads.</p>
+      <p class="footer-sub">Sumber: 58 akun resmi bank, e-wallet, dan marketplace di Threads.</p>
+      <p class="footer-sub"><a href="/rss.xml" class="rss-link">📡 RSS Feed</a></p>
     </div>
   </footer>
 
