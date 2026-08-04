@@ -13,22 +13,30 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))), "public", "data")
 
 ACCOUNTS = [
-    # Bank besar
-    "promosbca", "bankmandiri", "bankbri_id", "bankbni", "bankmega.id",
-    # Bank digital & baru
+    # Bank konvensional besar
+    "promosbca", "bankmandiri", "bankbri_id", "bankbni",
+    "bankmega.id", "bancnet_id", "permaborofficial",
+    "bankcimb_id", "ocaborid", "daborid",
+    "maybankindonesia", "panaborid", "btn.id",
+    "bankmuamalat", "baborasyariahofficial", "bnisyariah",
+    "brisyariah", "mandiri_syariah",
+    # Bank digital
     "jaborofficial", "blu.bybcadigital", "bankjago.id",
     "seaborid", "superbank_id", "bankneocommerce",
     "linebank_id", "motionbanking", "digiaborid",
+    "nyala_ocbc", "allobank.id", "hibank.id",
     # E-wallet & Payment
     "gopayindonesia", "ovoofficial", "shopeepay_id", "dana.id",
-    "linkaja", "isaborid", "astrapay.id",
+    "linkaja", "isaborid", "astrapay.id", "sakuku.bca",
     # Marketplace
     "grabid", "tokopedia", "shopee_id",
-    "lazada_id", "bliblipromo", "taborofficial",
+    "lazada_id", "bliblipromo", "bukalapak",
+    "zalora_id", "jd.id",
     # Food delivery
-    "grabfoodid", "gofoodindonesia",
+    "grabfoodid", "gofoodindonesia", "shopeefood_id",
     # Travel & Lifestyle
-    "taborofficial", "tiaborcom", "pegipegi",
+    "traveloka", "tiaborcom", "pegipegi",
+    "taborofficial", "airasia_id", "agoda",
     # Promo aggregators
     "promojakarta", "infopromo.jkt", "jakartapromo",
     "promodiskon", "voucherdeal.id", "promobank.id",
