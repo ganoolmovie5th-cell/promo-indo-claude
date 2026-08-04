@@ -1,30 +1,25 @@
 """
-PromoIndo Scraper — Full Threads scraping via Playwright.
-Runs daily via GitHub Actions. Outputs public/data/promos.json.
+PromoIndo Scraper — Full Threads scraping via Playwright (Stealth Mode).
+Techniques: stealth browser, randomized delays, scroll loading, retry, anti-detection.
 """
 import json
 import os
 import re
-import time
+import random
 import asyncio
 from datetime import datetime, timezone
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))), "public", "data")
 
-# ─── Threads accounts to scrape ─────────────────────────────────────────────────
 ACCOUNTS = [
-    # Bank promo
-    "promosbca", "bankmandiri", "bankbri_id",
-    "bankbni", "bankmega.id",
-    # E-wallet & Payment
-    "gopaborindonesia", "ovoofficial", "shopeepay_id", "dana.id",
-    # Marketplace & Food
-    "grabid", "tokopedia", "shopee_id",
-    # Promo aggregators
     "promojakarta", "infopromo.jkt", "jakartapromo",
     "promodiskon", "voucherdeal.id", "promobank.id",
     "diskonaja", "infodiskon", "promopedia.id",
+    "promosbca", "bankmandiri", "bankbri_id",
+    "bankbni", "gopayindonesia", "ovoofficial",
+    "shopeepay_id", "dana.id", "grabid",
+    "tokopedia", "shopee_id", "taborofficial",
 ]
 
 PROMO_KEYWORDS = [
@@ -36,25 +31,20 @@ PROMO_KEYWORDS = [
 CATEGORIES = {
     "makanan": ["makan", "food", "resto", "kuliner", "pizza", "burger",
                 "kfc", "mcd", "starbucks", "grabfood", "gofood", "coffee",
-                "kopi", "jco", "j.co", "sushi", "bakery", "chatime",
-                "hokben", "yoshinoya", "richeese", "mixue", "boba"],
+                "kopi", "jco", "j.co", "sushi", "hokben", "mixue", "chatime"],
     "belanja": ["diskon", "sale", "fashion", "belanja", "shopee",
                 "tokopedia", "lazada", "blibli", "zalora", "uniqlo",
-                "h&m", "zara", "ibox", "gadget", "elektronik"],
-    "hiburan": ["bioskop", "cinema", "cgv", "xxi", "tiket konser",
-                "event", "spotify", "netflix", "vidio", "disney",
-                "nonton", "tix id", "film"],
+                "gadget", "elektronik", "ibox"],
+    "hiburan": ["bioskop", "cinema", "cgv", "xxi", "konser",
+                "spotify", "netflix", "nonton", "tix", "film"],
     "hotel": ["hotel", "traveloka", "tiket.com", "agoda", "booking",
-              "villa", "resort", "penginapan", "wisata", "travel",
-              "pesawat", "flight"],
+              "villa", "resort", "wisata", "pesawat", "flight"],
     "transport": ["grab", "gojek", "gocar", "goride", "grabcar",
-                  "grabride", "transport", "kereta", "bbm", "bensin",
-                  "pertamina", "shell", "bp"],
-    "kesehatan": ["apotek", "halodoc", "alodokter", "farmasi",
-                  "vitamin", "kesehatan", "klinik", "obat"],
+                  "transport", "kereta", "bbm", "bensin", "bandara"],
+    "kesehatan": ["apotek", "halodoc", "alodokter", "obat", "vitamin",
+                  "kesehatan", "klinik"],
     "keuangan": ["cashback", "cicilan", "bunga", "kredit", "debit",
-                 "kartu", "paylater", "pinjaman", "tagihan", "pln",
-                 "bpjs", "transfer"],
+                 "kartu", "paylater", "tagihan", "pln", "transfer"],
 }
 
 
@@ -79,19 +69,14 @@ def extract_discount(text):
 
 
 def extract_code(text):
-    m = re.search(
-        r'(?:kode|code|voucher|kupon)[:\s]*([A-Z0-9]{4,15})',
-        text, re.IGNORECASE
-    )
+    m = re.search(r'(?:kode|code|voucher|kupon)[:\s]*([A-Z0-9]{4,15})', text, re.IGNORECASE)
     return m.group(1).upper() if m else None
 
 
 def extract_valid_until(text):
     m = re.search(
-        r'(?:s/?d|sampai|hingga|until|berlaku|expired?)[:\s]*'
-        r'(\d{1,2}[\s/\-]\w+[\s/\-]\d{2,4})',
-        text, re.IGNORECASE
-    )
+        r'(?:s/?d|sampai|hingga|until|berlaku|expired?|periode)[:\s]*(\d{1,2}[\s/\-]\w+[\s/\-]\d{2,4})',
+        text, re.IGNORECASE)
     return m.group(1) if m else None
 
 
@@ -101,72 +86,135 @@ def is_promo_post(text):
 
 
 def parse_date_id(s):
-    """Parse Indonesian date like '31 Agustus 2026' or '15/08/2026'."""
     if not s:
         return None
     months = {"januari":1,"februari":2,"maret":3,"april":4,"mei":5,"juni":6,
               "juli":7,"agustus":8,"september":9,"oktober":10,"november":11,"desember":12}
-    import re as _re
-    m = _re.match(r'(\d{1,2})\s+(\w+)\s+(\d{4})', s.strip())
+    m = re.match(r'(\d{1,2})\s+(\w+)\s+(\d{4})', s.strip())
     if m:
         mon = months.get(m.group(2).lower())
         if mon:
             from datetime import date
             return date(int(m.group(3)), mon, int(m.group(1)))
-    m2 = _re.match(r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{4})', s.strip())
+    m2 = re.match(r'(\d{1,2})[/\-](\d{1,2})[/\-](\d{4})', s.strip())
     if m2:
         from datetime import date
         return date(int(m2.group(3)), int(m2.group(2)), int(m2.group(1)))
     return None
 
 
-async def scrape_threads_account(page, username):
-    """Scrape posts from a single Threads account using Playwright."""
+# ─── Stealth browser config ─────────────────────────────────────────────────────
+USER_AGENTS = [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15",
+]
+
+
+async def stealth_page(context):
+    """Create a stealth page with anti-detection measures."""
+    page = await context.new_page()
+
+    # Override navigator.webdriver to false
+    await page.add_init_script("""
+        Object.defineProperty(navigator, 'webdriver', { get: () => false });
+        Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+        Object.defineProperty(navigator, 'languages', { get: () => ['id-ID', 'id', 'en-US', 'en'] });
+        window.chrome = { runtime: {} };
+        const originalQuery = window.navigator.permissions.query;
+        window.navigator.permissions.query = (parameters) =>
+            parameters.name === 'notifications'
+                ? Promise.resolve({ state: Notification.permission })
+                : originalQuery(parameters);
+    """)
+    return page
+
+
+async def scrape_account(page, username, retry=2):
+    """Scrape posts from a Threads account with retries."""
     posts = []
     url = f"https://www.threads.net/@{username}"
 
-    try:
-        await page.goto(url, wait_until="networkidle", timeout=30000)
-        # Wait for post content to render
-        await page.wait_for_timeout(3000)
+    for attempt in range(retry):
+        try:
+            # Random delay to appear human
+            await page.wait_for_timeout(random.randint(1000, 3000))
 
-        # Scroll down to load more posts
-        for _ in range(3):
-            await page.evaluate("window.scrollBy(0, 1000)")
-            await page.wait_for_timeout(1500)
+            response = await page.goto(url, wait_until="domcontentloaded", timeout=30000)
 
-        # Extract post texts from the page
-        # Threads uses various selectors for post text
-        selectors = [
-            '[data-pressable-container="true"] span',
-            'article span[dir="auto"]',
-            'div[data-pressable-container] span[dir="auto"]',
-            'span[class*="x1lliihq"]',
-        ]
+            if response and response.status == 200:
+                # Wait for content to render
+                await page.wait_for_timeout(random.randint(3000, 5000))
 
-        texts = set()
-        for sel in selectors:
-            elements = await page.query_selector_all(sel)
-            for el in elements:
-                text = await el.inner_text()
-                if text and len(text) > 30 and is_promo_post(text):
-                    texts.add(text[:500])
+                # Scroll down multiple times to trigger lazy loading
+                for scroll in range(4):
+                    await page.evaluate(f"window.scrollBy(0, {random.randint(800, 1200)})")
+                    await page.wait_for_timeout(random.randint(1000, 2000))
 
-        for text in texts:
-            posts.append({
-                "id": f"{username}_{hash(text) % 100000}",
-                "source": f"@{username}",
-                "source_url": f"https://www.threads.net/@{username}",
-                "text": text,
-                "category": classify(text),
-                "discount": extract_discount(text),
-                "code": extract_code(text),
-                "valid_until": extract_valid_until(text),
-                "scraped_at": datetime.now(timezone.utc).isoformat(),
-            })
+                # Try multiple extraction methods
+                texts = set()
 
-    except Exception as e:
-        print(f"  [!] Error @{username}: {e}")
+                # Method 1: Get all visible text blocks
+                elements = await page.query_selector_all('div[dir="auto"]')
+                for el in elements:
+                    try:
+                        text = await el.inner_text()
+                        if text and len(text) > 30:
+                            texts.add(text.strip()[:500])
+                    except Exception:
+                        continue
+
+                # Method 2: Broader span selection
+                if not texts:
+                    spans = await page.query_selector_all('span[dir="auto"]')
+                    for sp in spans:
+                        try:
+                            text = await sp.inner_text()
+                            if text and len(text) > 30:
+                                texts.add(text.strip()[:500])
+                        except Exception:
+                            continue
+
+                # Method 3: Extract from page content/meta
+                if not texts:
+                    content = await page.content()
+                    # Look for og:description or meta content
+                    meta_texts = re.findall(
+                        r'content="([^"]{30,500})"', content)
+                    for mt in meta_texts:
+                        if is_promo_post(mt):
+                            texts.add(mt[:500])
+
+                # Filter promo posts only
+                for text in texts:
+                    if is_promo_post(text):
+                        posts.append({
+                            "id": f"{username}_{hash(text) % 100000}",
+                            "source": f"@{username}",
+                            "source_url": url,
+                            "text": text,
+                            "category": classify(text),
+                            "discount": extract_discount(text),
+                            "code": extract_code(text),
+                            "valid_until": extract_valid_until(text),
+                            "scraped_at": datetime.now(timezone.utc).isoformat(),
+                        })
+
+                if posts:
+                    break  # Success, no retry needed
+
+            elif response and response.status in (302, 303, 429):
+                print(f"    Redirect/rate-limit ({response.status}), retry...")
+                await page.wait_for_timeout(random.randint(5000, 10000))
+                continue
+
+        except Exception as e:
+            if attempt < retry - 1:
+                print(f"    Attempt {attempt+1} failed: {e}, retrying...")
+                await page.wait_for_timeout(random.randint(3000, 6000))
+            else:
+                print(f"  [!] Failed @{username} after {retry} attempts: {e}")
 
     return posts
 
@@ -177,26 +225,38 @@ async def main_async():
     os.makedirs(DATA_DIR, exist_ok=True)
     all_promos = []
 
-    print(f"[*] Launching Playwright browser...")
+    print(f"[*] Launching stealth Playwright browser...")
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                       "AppleWebKit/537.36 (KHTML, like Gecko) "
-                       "Chrome/128.0.0.0 Safari/537.36",
-            locale="id-ID",
+        browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--disable-features=IsolateOrigins,site-per-process",
+                "--no-sandbox",
+            ]
         )
-        page = await context.new_page()
+        context = await browser.new_context(
+            user_agent=random.choice(USER_AGENTS),
+            locale="id-ID",
+            timezone_id="Asia/Jakarta",
+            viewport={"width": 1920, "height": 1080},
+            java_script_enabled=True,
+        )
+
+        page = await stealth_page(context)
 
         print(f"[*] Scraping {len(ACCOUNTS)} Threads accounts...")
         for i, account in enumerate(ACCOUNTS):
             print(f"  [{i+1}/{len(ACCOUNTS)}] @{account}")
-            posts = await scrape_threads_account(page, account)
+            posts = await scrape_account(page, account)
             if posts:
-                print(f"    Found {len(posts)} promo(s)")
+                print(f"    ✓ Found {len(posts)} promo(s)")
                 all_promos.extend(posts)
-            # Rate limit between accounts
-            await page.wait_for_timeout(2000)
+            else:
+                print(f"    - No promos found")
+
+            # Human-like delay between accounts
+            await page.wait_for_timeout(random.randint(2000, 5000))
 
         await browser.close()
 
@@ -210,7 +270,7 @@ async def main_async():
             except json.JSONDecodeError:
                 existing = []
 
-    # Merge new + existing, deduplicate
+    # Merge + deduplicate
     seen = set()
     unique = []
     for p in all_promos + existing:
@@ -219,10 +279,10 @@ async def main_async():
             seen.add(key)
             unique.append(p)
 
-    # Sort newest first, keep max 500
+    # Sort newest first
     unique.sort(key=lambda x: x.get("scraped_at", ""), reverse=True)
 
-    # Remove expired promos
+    # Remove expired
     today = datetime.now(timezone.utc).date()
     active = []
     for p in unique:
@@ -230,15 +290,14 @@ async def main_async():
         if vu:
             parsed = parse_date_id(vu)
             if parsed and parsed < today:
-                continue  # expired, skip
+                continue
         active.append(p)
     unique = active[:500]
 
-    # Write data
+    # Write
     with open(data_file, "w", encoding="utf-8") as f:
         json.dump(unique, f, ensure_ascii=False, indent=2)
 
-    # Write metadata
     meta = {
         "last_updated": datetime.now(timezone.utc).isoformat(),
         "total_promos": len(unique),
