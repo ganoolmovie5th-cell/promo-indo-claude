@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromoIndo — Kumpulan Promo, Voucher & Cashback Indonesia</title>
+  <meta name="description" content="Kumpulan promo, kode voucher, dan cashback terlengkap di Indonesia. Update otomatis setiap hari dari berbagai bank dan provider.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="/" class="logo">
+        <span class="logo-icon">🏷️</span>
+        <span class="logo-text">PromoIndo</span>
+      </a>
+      <div class="nav-meta" id="lastUpdated"></div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <h1>Promo, Voucher & Cashback <span class="highlight">Indonesia</span></h1>
+      <p class="hero-sub">Update otomatis setiap hari dari bank, e-wallet, dan marketplace terpopuler.</p>
+      <!-- Search -->
+      <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Cari promo... (contoh: starbucks, cashback 50%)" autocomplete="off">
+      </div>
+    </div>
+  </header>
+
+  <!-- Categories -->
+  <section class="categories">
+    <div class="container">
+      <div class="cat-pills" id="catPills">
+        <button class="pill active" data-cat="semua">Semua</button>
+        <button class="pill" data-cat="makanan">🍔 Makanan</button>
+        <button class="pill" data-cat="belanja">🛍️ Belanja</button>
+        <button class="pill" data-cat="hiburan">🎬 Hiburan</button>
+        <button class="pill" data-cat="hotel">🏨 Hotel & Wisata</button>
+        <button class="pill" data-cat="transport">🚗 Transport</button>
+        <button class="pill" data-cat="kesehatan">💊 Kesehatan</button>
+        <button class="pill" data-cat="keuangan">💳 Keuangan</button>
+        <button class="pill" data-cat="lainnya">📦 Lainnya</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promo Grid -->
+  <main class="promos-section">
+    <div class="container">
+      <div class="promos-header">
+        <h2 id="promoCount">Memuat...</h2>
+      </div>
+      <div class="promo-grid" id="promoGrid">
+        <!-- Cards injected by JS -->
+      </div>
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="empty-icon">🔍</div>
+        <p>Tidak ada promo ditemukan.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>PromoIndo &copy; 2026. Data di-scrape otomatis dari Threads. Tidak berafiliasi dengan brand manapun.</p>
+      <p class="footer-sub">Sumber: akun resmi bank, e-wallet, dan marketplace di Threads.</p>
+    </div>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
