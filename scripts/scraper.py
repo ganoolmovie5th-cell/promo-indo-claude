@@ -13,13 +13,26 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(
     os.path.abspath(__file__))), "public", "data")
 
 ACCOUNTS = [
+    # Bank besar
+    "promosbca", "bankmandiri", "bankbri_id", "bankbni", "bankmega.id",
+    # Bank digital & baru
+    "jaborofficial", "blu.bybcadigital", "bankjago.id",
+    "seaborid", "superbank_id", "bankneocommerce",
+    "linebank_id", "motionbanking", "digiaborid",
+    # E-wallet & Payment
+    "gopayindonesia", "ovoofficial", "shopeepay_id", "dana.id",
+    "linkaja", "isaborid", "astrapay.id",
+    # Marketplace
+    "grabid", "tokopedia", "shopee_id",
+    "lazada_id", "bliblipromo", "taborofficial",
+    # Food delivery
+    "grabfoodid", "gofoodindonesia",
+    # Travel & Lifestyle
+    "taborofficial", "tiaborcom", "pegipegi",
+    # Promo aggregators
     "promojakarta", "infopromo.jkt", "jakartapromo",
     "promodiskon", "voucherdeal.id", "promobank.id",
     "diskonaja", "infodiskon", "promopedia.id",
-    "promosbca", "bankmandiri", "bankbri_id",
-    "bankbni", "gopayindonesia", "ovoofficial",
-    "shopeepay_id", "dana.id", "grabid",
-    "tokopedia", "shopee_id", "taborofficial",
 ]
 
 PROMO_KEYWORDS = [
