@@ -1,7 +1,15 @@
 {
-  "last_updated": "2026-08-04T00:00:00+00:00",
-  "total_promos": 0,
+  "last_updated": "2026-08-04T17:22:55.063702+00:00",
+  "total_promos": 23,
   "accounts_scraped": 21,
-  "categories": ["makanan", "belanja", "hiburan", "hotel", "transport", "kesehatan", "keuangan", "lainnya"],
-  "note": "Data sourced exclusively from Threads. Auto-updated daily via GitHub Actions."
+  "categories": [
+    "makanan",
+    "belanja",
+    "hiburan",
+    "hotel",
+    "transport",
+    "kesehatan",
+    "keuangan",
+    "lainnya"
+  ]
 }
