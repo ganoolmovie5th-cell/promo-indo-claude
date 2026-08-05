@@ -34,13 +34,29 @@
   <header class="hero">
     <div class="container">
       <h1>Promo, Voucher & Cashback dari <span class="highlight">Threads</span></h1>
-      <p class="hero-sub">Dikumpulkan otomatis setiap hari dari akun bank, e-wallet, dan marketplace di Threads.</p>
+      <p class="hero-sub">Dikumpulkan otomatis dari akun bank, e-wallet, dan marketplace di Threads.</p>
       <div class="hero-stats" id="heroStats"></div>
       <div class="search-wrap">
         <input type="text" id="searchInput" placeholder="Cari promo... (contoh: starbucks, cashback 50%)" autocomplete="off">
       </div>
     </div>
   </header>
+
+  <!-- Promo Hari Ini -->
+  <section class="today-section" id="todaySection" style="display:none;">
+    <div class="container">
+      <h3 class="section-title">🔥 Promo Hari Ini</h3>
+      <div class="today-grid" id="todayGrid"></div>
+    </div>
+  </section>
+
+  <!-- Stats Dashboard -->
+  <section class="stats-section" id="statsSection">
+    <div class="container">
+      <h3 class="section-title">📊 Statistik</h3>
+      <div class="stats-grid" id="statsGrid"></div>
+    </div>
+  </section>
 
   <!-- Trending / Saved -->
   <section class="trending-section" style="display:none;">
@@ -67,11 +83,18 @@
     </div>
   </section>
 
-  <!-- Sort & Filter -->
+  <!-- Type filter + Sort -->
   <section class="sort-bar">
     <div class="container sort-inner">
       <div class="sort-left"><h2 id="promoCount">Memuat...</h2></div>
       <div class="sort-right">
+        <select id="typeFilter" class="sort-select">
+          <option value="">Semua Tipe</option>
+          <option value="cashback">💰 Cashback</option>
+          <option value="voucher">🎫 Voucher/Kode</option>
+          <option value="diskon">🏷️ Diskon %</option>
+          <option value="gratis">🆓 Gratis</option>
+        </select>
         <select id="sortSelect" class="sort-select">
           <option value="terbaru">Terbaru</option>
           <option value="diskon">Diskon Terbesar</option>
@@ -101,6 +124,19 @@
       </div>
     </div>
   </main>
+
+  <!-- Expired Archive -->
+  <section class="archive-section" id="archiveSection" style="display:none;">
+    <div class="container">
+      <h3 class="section-title">🕐 Promo Expired (Arsip)</h3>
+      <div class="archive-grid" id="archiveGrid"></div>
+    </div>
+  </section>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none;">
+    <div class="modal-content" id="modalContent"></div>
+  </div>
 
   <!-- Scroll to top -->
   <button class="scroll-top" id="scrollTop" aria-label="Scroll to top">↑</button>
