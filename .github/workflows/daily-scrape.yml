@@ -2,7 +2,7 @@ name: Daily Promo Scrape
 
 on:
   schedule:
-    - cron: '0 1 * * *'  # Run daily at 08:00 WIB (01:00 UTC)
+    - cron: '0 * * * *'  # Run every hour
   workflow_dispatch:  # Manual trigger
 
 permissions:
